@@ -7,24 +7,67 @@ const { Category, Product } = require('../../models');
 router.get('/', (req, res) => {
   // find all categories
   // be sure to include its associated Prodres
-  res.send('Crystal is a nice person!')
+  // res.send('Crystal is a nice person!')
+  Category.findAll().then(result=> res.status(200).send(result))
 });
 
 router.get('/:id', (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
+  Category.findAll({
+    where: {
+      id:req.params.id
+    }
+  }).then(result=> res.status(200).send(result))
 });
 
 router.post('/', (req, res) => {
   // create a new category
-});
+    try {
+      const newCategory = await Category.create(req.body);
+      res.status(200).json(newCategory);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  });
 
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // update a category by its `id` value
-});
+  router.put("/:id", async (req, res) => {
+    try {
+      const newCategory = await Category.update(req.body, {
+        where: {
+          id: req.params.id,
+        },
+      });
+      if (!newCategory[0]) {
+        res.status(404).json({ message: "No Catergory" });
+        return;
+      }
+      res.status(200).json(newCategory);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  });
 
-router.delete('/:id', (req, res) => {
-  // delete a category by its `id` value
-});
+  router.delete("/:id", async(req, res) => {
+    // delete a category by its `id` value
+      try {
+        const newCategory= await Category.destroy({
+          where: {
+            id: req.params.id,
+          },
+        });
+        if (!newCategory) {
+          res.status(404).json({ message: "no cat with ID!" });
+          return;
+        }
+        res.status(200).json(newCategory);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    });
+  });
+
 
 module.exports = router;

@@ -21,30 +21,30 @@ router.get('/:id', (req, res) => {
   }).then(result=> res.status(200).send(result))
 });
 
-router.post('/', (req, res) => {
+router.post('/', async(req, res) => {
   // create a new category
     try {
-      const newCategory = await Category.create(req.body);
-      res.status(200).json(newCategory);
+      const categoryData= await Category.create(req.body);
+      res.status(200).json(categoryData);
     } catch (err) {
       res.status(400).json(err);
     }
   });
 
-router.put("/:id", (req, res) => {
+// router.put("/:id", (req, res) => {
   // update a category by its `id` value
   router.put("/:id", async (req, res) => {
     try {
-      const newCategory = await Category.update(req.body, {
+      const categoryData = await Category.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
-      if (!newCategory[0]) {
+      if (!categoryData[0]) {
         res.status(404).json({ message: "No Catergory" });
         return;
       }
-      res.status(200).json(newCategory);
+      res.status(200).json(categoryData);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -53,21 +53,21 @@ router.put("/:id", (req, res) => {
   router.delete("/:id", async(req, res) => {
     // delete a category by its `id` value
       try {
-        const newCategory= await Category.destroy({
+        const categoryData= await Category.destroy({
           where: {
             id: req.params.id,
           },
         });
-        if (!newCategory) {
+        if (!categoryData) {
           res.status(404).json({ message: "no cat with ID!" });
           return;
         }
-        res.status(200).json(newCategory);
+        res.status(200).json(categoryData);
       } catch (err) {
         res.status(500).json(err);
       }
     });
-  });
+  // });
 
 
 module.exports = router;
